@@ -1,0 +1,183 @@
+DATA:
+---------
+cls()
+def get_total(num_files, num_hashes_for_an_img):
+    return nCr((num_files * num_hashes_for_an_img), 2) - (nCr(num_hashes_for_an_img, 2) * num_files)
+d = {
+    1: ("A", "B", "C",),
+    2: ("A", "B", "C",),
+    3: ("A", "B", "C",),
+    4: ("A", "B", "C",),
+    5: ("A", "B", "C",),
+    6: ("A", "B", "C",),
+    7: ("A", "B", "C",)
+}
+dis = 0
+lol = []
+for l in list(combinations(chain.from_iterable([p for p in [product([x], d[x]) for x in d]]), 2)):
+    m, n = l
+    if m[0] != n[0]:
+        print(l)
+    else:
+        dis += 1
+pprint(d)
+print("Length using 'get_total' is %d" % get_total(len(d), len(d[1])))
+print("Length of lol is %d" % len(lol))
+print("No of discarded combinations are %d" % dis)
+print("Product count is %d" % len([product([x], d[x]) for x in d]))
+# print(sum(1 for l in combinations(chain.from_iterable([p for p in [product([x], d[x]) for x in d]]), 2)))
+x = lambda n: n * (n - 3) * 2
+print("Length using the lambda is %d" % x(len(d)))
+
+
+
+products = num_files * num_hashes_for_an_img
+nCr(products)
+
+
+
+
+d = {
+    1: ("A", "B"),
+    2: ("C", "D"),
+    3: ("E", "F"),
+    4: ("G", "H"),
+    # 5: ("I", "J"),
+    # 6: ("K", "L"),
+    # 7: ("M", "N")
+}
+l = []
+while d:
+    k, v = d.popitem()
+    for x in d:
+        for y in v:
+            l.append(((k, y), (x, d[x][0])))
+            l.append(((k, y), (x, d[x][1])))
+print(len(l))
+
+
+
+
+
+COMBINATIONS:
+-------------
+var_1 = frozenset((1, "1a"))
+var_2 = frozenset((1, "1b"))
+var_3 = frozenset((2, "2a"))
+var_4 = frozenset((2, "2b"))
+var_5 = frozenset((3, "3a"))
+var_6 = frozenset((3, "3b"))
+
+
+d = {
+        Pair(var_1, var_2),
+        Pair(var_1, var_3),
+        Pair(var_1, var_4),
+        Pair(var_1, var_5),
+        Pair(var_1, var_6),
+        Pair(var_2, var_3),
+        Pair(var_2, var_4),
+        Pair(var_2, var_5),
+        Pair(var_2, var_6),
+        Pair(var_3, var_4),
+        Pair(var_3, var_5),
+        Pair(var_3, var_6),
+        Pair(var_4, var_5),
+        Pair(var_4, var_6),
+        Pair(var_5, var_6),
+    }
+
+
+(1, "1a"), (2, "2a")
+(1, "1a"), (2, "2b")
+(1, "1b"), (2, "2a")
+(1, "1b"), (2, "2b")
+(2, "2a"), (3, "3a")
+(2, "2a"), (3, "3b")
+(2, "2b"), (3, "3a")
+(2, "2b"), (3, "3b")
+
+
+
+CURRENT METHOD:
+---------------
+combs = []
+for x in d:  # name of image #1
+    for y in d:  # name of image #2
+        if x == y:
+            continue
+        combs.extend(((x, m), (y, n)) for m in d[x] for n in d[y])
+
+
+
+EXPANSION OF CURRENT METHOD:
+----------------------------
+combs = []
+for x in d:  # name of image #1
+    for y in d:  # name of image #2
+        if x == y:
+            continue
+        for n in d[y]:
+            for m in d[x]:
+                combs += [((x, m), (y, n))]
+
+
+
+PRACTICALLY LARGE DICT:
+-----------------------
+d = {}
+for x in range(10000):
+    for y in range(6):
+        d[x] = [randint(0, 10)]
+
+
+
+KEYS AND VALUES AS LISTS:
+-------------------------
+keys, values = list(d.keys()), list(d.values())
+keys, values = list(b.keys()), list(b.values())
+
+
+
+CERTIFIED CORRECT:
+------------------
+foo = [list(product([keys[x]], [values[x][0], values[x][1], values[x][2]])) for x in range(len(keys))]
+      [list(product([keys[x]], [v for v in values[x]])) for x in range(len(keys))]
+
+final = []
+[final.extend(e) for e in [list(product([keys[x]], [v for v in values[x]])) for x in range(len(keys))]]
+bar = list(combinations(final, 2))
+
+
+
+TWO CONTENDERS - THE SCRIPT:
+----------------------------
+from os import system
+from itertools import chain, product, combinations
+from random import randint
+
+def cls(): system("cls")
+
+d = {
+    1: ["1a", "1b"],
+    2: ["2a", "2b"],
+    3: ["3a", "3b"],
+}
+
+final = []
+for x in d:  # name of image #1
+    for y in d:  # name of image #2
+        if x == y:
+            continue
+        final.extend(((x, m), (y, n)) for m in d[x] for n in d[y])
+print("Using method #1: %d" % len(final))
+
+#  ============================
+
+keys, values = list(d.keys()), list(d.values())
+#  foo = chain.from_iterable([list(product([keys[x]], [v for v in values[x]])) for x in range(len(keys))])
+foo = chain.from_iterable([product([keys[x]], [v for v in values[x]]) for x in range(len(keys))])
+bar = list(combinations(foo, 2))
+print("Using method #2: %d" % len(bar))
+for b in bar:
+    print(b)

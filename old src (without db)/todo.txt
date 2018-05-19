@@ -1,0 +1,2 @@
+1. Deleting one out of three similar images creates a "hole" -- need QSqlTableView
+2. Stack delete to enable undo
